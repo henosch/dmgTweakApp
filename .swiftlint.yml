@@ -1,0 +1,18 @@
+included:
+  - Sources
+
+excluded:
+  - .build
+  - dist
+  - dmgTweak.app
+  - dmgTweak_Backup.swift
+
+disabled_rules:
+  - file_length
+  - type_body_length
+  - function_body_length
+  - cyclomatic_complexity
+
+opt_in_rules: []
+
+reporter: "xcode"
