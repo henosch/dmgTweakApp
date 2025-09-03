@@ -100,13 +100,10 @@ Apache License 2.0. See `LICENSE`.
 - Bundle: unified binary name `Contents/MacOS/dmgTweak`
 - Tooling: SwiftLint/SwiftFormat configured; backup file excluded from lint
 
-## How to Run (macOS)
-1) Download the release asset: `dmgTweak-v1.0.0-macOS.zip`
-2) Unzip (double‑click) to get `dmgTweak.app`
-3) Optional: Move to `~/Applications/` or `/Applications/`
-4) First launch (unsigned app): Control‑click `dmgTweak.app` → Open → Open
-   - Alternatively: `xattr -dr com.apple.quarantine dmgTweak.app`
-5) Launch: `open dmgTweak.app`
+## Build From Source (macOS)
+1) Clone the repo: `git clone https://github.com/henosch/dmgTweakApp.git && cd dmgTweakApp`
+2) Build: `./dev-build.sh` (recommended) or `swift build`
+3) Run: `open dist/dmgTweak.app`
 
 Language
 - UI follows system language (Deutsch/English).

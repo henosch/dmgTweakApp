@@ -311,44 +311,47 @@ install_app() {
 
 # Optionally package zip and update GitHub release notes with checksum
 package_and_update_release() {
+    # Source-only packaging: create a zip of the tracked source at HEAD
     if [ -z "${RELEASE_TAG:-}" ]; then
         return 0
     fi
-    local app_path="$DIST_DIR/$APP_NAME.app"
-    local zip_name="$DIST_DIR/${APP_NAME}-${RELEASE_TAG}-macOS.zip"
-    if [ -d "$app_path" ]; then
-        log "Packaging zip for release ${RELEASE_TAG}..."
-        rm -f "$zip_name"
-        ditto -c -k --sequesterRsrc --keepParent "$app_path" "$zip_name" || {
-            warn "Failed to create zip package"
+    mkdir -p "$DIST_DIR"
+    local zip_name="$DIST_DIR/${APP_NAME}-${RELEASE_TAG}-source.zip"
+    log "Packaging source zip for release ${RELEASE_TAG}..."
+    rm -f "$zip_name"
+    # Use git archive to include only tracked files and honor .gitignore
+    if git rev-parse --verify HEAD >/dev/null 2>&1; then
+        git archive -o "$zip_name" --format=zip HEAD || {
+            warn "Failed to create source zip"
             return 0
         }
-        local sha
-        sha=$(shasum -a 256 "$zip_name" | awk '{print $1}')
-        log "SHA256: $sha"
-        if command -v gh >/dev/null 2>&1; then
-            # Update or append Checksums section
-            local body tmp
-            body=$(gh release view "$RELEASE_TAG" --json body -q .body 2>/dev/null || echo "")
-            tmp=$(mktemp)
-            if echo "$body" | grep -q "^## Checksums"; then
-                # Keep everything before Checksums
-                printf "%s\n\n" "$body" | awk 'BEGIN{p=1} /^## Checksums/{p=0} {if(p)print}' > "$tmp"
-            else
-                printf "%s\n\n" "$body" > "$tmp"
-            fi
-            {
-                echo "## Checksums"
-                echo "- ${APP_NAME}-${RELEASE_TAG}-macOS.zip (SHA256):"
-                echo "  $sha  ${APP_NAME}-${RELEASE_TAG}-macOS.zip"
-            } >> "$tmp"
-            gh release upload "$RELEASE_TAG" "$zip_name" --clobber >/dev/null 2>&1 || true
-            gh release edit "$RELEASE_TAG" --notes-file "$tmp" >/dev/null 2>&1 || true
-            rm -f "$tmp"
-            success "Release ${RELEASE_TAG} updated with checksum"
+    else
+        warn "Git repository not initialized; skipping source packaging"
+        return 0
+    fi
+    local sha
+    sha=$(shasum -a 256 "$zip_name" | awk '{print $1}')
+    log "SHA256: $sha"
+    if command -v gh >/dev/null 2>&1; then
+        local body tmp
+        body=$(gh release view "$RELEASE_TAG" --json body -q .body 2>/dev/null || echo "")
+        tmp=$(mktemp)
+        if echo "$body" | grep -q "^## Checksums"; then
+            printf "%s\n\n" "$body" | awk 'BEGIN{p=1} /^## Checksums/{p=0} {if(p)print}' > "$tmp"
         else
-            warn "gh not found; skipped release notes update"
+            printf "%s\n\n" "$body" > "$tmp"
         fi
+        {
+            echo "## Checksums"
+            echo "- ${APP_NAME}-${RELEASE_TAG}-source.zip (SHA256):"
+            echo "  $sha  ${APP_NAME}-${RELEASE_TAG}-source.zip"
+        } >> "$tmp"
+        gh release upload "$RELEASE_TAG" "$zip_name" --clobber >/dev/null 2>&1 || true
+        gh release edit "$RELEASE_TAG" --notes-file "$tmp" >/dev/null 2>&1 || true
+        rm -f "$tmp"
+        success "Release ${RELEASE_TAG} updated with source zip + checksum"
+    else
+        warn "gh not found; skipped release notes update"
     fi
 }
 
@@ -427,8 +430,7 @@ main() {
     compile_project
     update_bundle
     sign_bundle
-    # Do not install to ~/Applications; keep outputs only in dist/
-    package_and_update_release
+    # Keep outputs only in dist/
     
     # Final success message
     echo

@@ -50,15 +50,10 @@
   - Reset: `defaults delete de.free.dmgTweak AppleLanguages`
 
 ## Release Packaging
-- Tag build: set `RELEASE_TAG` to package and update release notes.
-- Example: `RELEASE_TAG=v1.0.1 ./build.sh`
-- Output: `dist/dmgTweak-v<version>-macOS.zip` uploaded via `gh` (if installed).
-- Checksums: SHA256 computed and appended/updated under a “Checksums” section in the GitHub release notes.
-- Requirements: GitHub CLI `gh` authenticated; release `RELEASE_TAG` must exist (created separately).
+- No prebuilt binaries or zips.
+- Consumers clone the repository and build locally (`./dev-build.sh` or `swift build`).
 
 ## Cutting A New Release
 - Update docs: add changes to `README.md`/`README.de.md` and `Changelog` section.
 - Create tag: `git tag -a vX.Y.Z -m "vX.Y.Z" && git push origin vX.Y.Z`.
-- Build + package: `RELEASE_TAG=vX.Y.Z ./build.sh`.
-- Verify on GitHub: asset uploaded, Checksums updated, notes correct.
-- Optional: upload screenshots or additional assets as needed.
+- Verification: ensure main builds cleanly; users will clone and build from source.
