@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+ "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>CFBundleName</key>
+  <string>dmgTweak</string>
+  <key>CFBundleExecutable</key>
+  <string>dmgTweak</string>
+  <key>CFBundleIdentifier</key>
+  <string>de.free.dmgTweak</string>
+  <key>CFBundleDevelopmentRegion</key>
+  <string>en</string>
+  <key>CFBundleLocalizations</key>
+  <array>
+    <string>en</string>
+    <string>de</string>
+  </array>
+  <key>CFBundleVersion</key>
+  <string>1.0</string>
+  <key>CFBundlePackageType</key>
+  <string>APPL</string>
+  <key>LSMinimumSystemVersion</key>
+  <string>13.0</string>
+  <key>CFBundleIconFile</key>
+  <string>icon.icns</string>
+  <key>NSHumanReadableCopyright</key>
+  <string>© 2025 free. Alle Rechte vorbehalten.</string>
+</dict></plist>

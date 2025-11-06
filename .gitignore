@@ -1,0 +1,32 @@
+# Swift Package Manager
+.build/
+.swiftpm/
+Packages/
+Package.resolved
+
+# Xcode
+*.xcodeproj/
+*.xcworkspace/
+DerivedData/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# App Bundle (optional - uncomment if you don't want to track the built app)
+# *.app/
+
+# Temporary files
+*.tmp
+*.temp
+*~
+dmgTweak_Backup.swift
+
+# Logs
+*.log
+
+# Distribution
+dist/
+.claude/
+git_publish.sh
